@@ -23,6 +23,7 @@ class Template:
     PAT = re.compile(r'\{\{[^{]+\}\}')
     ONLY_WHITESPACE_LEFT = re.compile(r'[^\S\n]*(?:\n|$)')
     ONLY_WHITESPACE_RIGHT = re.compile(r'(?:\n|^)[^\S\n]*$')
+    NAME_PAT = re.compile(r'^[a-zA-Z0-9_]+$')
     FILTERS = {'odd': lambda x: x % 2 != 0,
                'even': lambda x: x % 2 == 0,
                'car': lambda x: x[0],
@@ -136,9 +137,10 @@ class Template:
                 program.append(indent * ' ' + 'yield ' + repr(task[1]))
                 need_pass = False
             elif task[0] is TOKEN_FOR:
+                iter_name = self.vet_name(task[1])
                 attr = self.transform_expr(task[2], local_stack)
                 program.append('{}for i, {} in enumerate({}):'
-                               .format(' ' * indent, task[1], attr))
+                               .format(' ' * indent, iter_name, attr))
                 stack.append((TOKEN_FOR, task[2]))
                 local_stack.append(task[1])
                 need_pass = True
@@ -227,5 +229,13 @@ class Template:
 
             return name
 
-        result = ''.join(['[{}]'.format(repr(x)) for x in path])
+        result = ''.join(['[{}]'.format(repr(cls.vet_name(x))) for x in path])
         return '__eat_error__(lambda: __data__' + result + ')'
+
+    @classmethod
+    def vet_name(cls, name: str) -> str:
+        """Check if a name (field name or iteration variable) is legal."""
+        if not cls.NAME_PAT.match(name):
+            raise ValueError('Illegal name: ' + name)
+
+        return name
