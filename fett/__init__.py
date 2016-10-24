@@ -219,6 +219,3 @@ class Template:
 
         result = ''.join(['[{}]'.format(repr(x)) for x in path])
         return '__eat_error__(lambda: __data__' + result + ')'
-
-t = Template('{{for x in list}}{{else}}nada{{end}}')
-t.render({'list': []})
