@@ -1,6 +1,9 @@
-====
-Fett
-====
+.. |travis| image:: https://travis-ci.org/i80and/fett.svg?branch=master
+            :target: https://travis-ci.org/i80and/fett
+
+=============
+Fett |travis|
+=============
 
 Overview
 --------
