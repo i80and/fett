@@ -54,6 +54,21 @@ tests:
     template: "| A {{if bool}}B {{if bool}}C{{end}} D{{end}} E |"
     expected: "| A  E |"
 
+  - name: Nested If within For
+    desc: If block nested within For block
+    data: {'customers': [{'name': 'Bob'}, {'name': 'Elvis'}, {'name': 'Judy'}]}
+    template: |
+      {{ for customer in customers }}
+      {{ if i even }}
+      Even: {{ customer.name }}
+      {{ else }}
+      Odd: {{ customer.name }}
+      {{ end }}
+      {{ else }}
+      No customers :(
+      {{ end }}
+    expected: "Even: Bob\nOdd: Elvis\nEven: Judy\n"
+
   - name: Context Misses
     desc: Failed context lookups should be considered falsey.
     data: { }

@@ -60,7 +60,9 @@ class Template:
             else:
                 b = match.start()
                 if a != b:
-                    self.tasks.append((TOKEN_LITERAL, template[a:b]))
+                    literal = template[a:b]
+                    if literal:
+                        self.tasks.append((TOKEN_LITERAL, literal))
                 (a, b) = (match.end(), match.end())
 
             # Comment
@@ -90,7 +92,9 @@ class Template:
                     start_of_line += 1
                 self.tasks.append((TOKEN_SUB, tag, ''.join(indentation)))
 
-        self.tasks.append((TOKEN_LITERAL, template[b:]))
+        literal = template[b:]
+        if literal:
+            self.tasks.append((TOKEN_LITERAL, literal))
 
         if depth > 0:
             raise ValueError('Expected "end"')
@@ -111,7 +115,11 @@ class Template:
         program = gobj['run']
 
         try:
-            return ''.join([x for x in program(data)])
+            generator = program(data)
+            if generator:
+                return ''.join([x for x in generator])
+
+            return ''
         except Exception as err:
             raise err.__class__('{}. Source:\n{}'.format(str(err),
                                                          self.program_source))
@@ -161,6 +169,8 @@ class Template:
             elif task[0] is TOKEN_END:
                 if stack[-1][0] is TOKEN_FOR:
                     local_stack.pop()
+
+                stack.pop()
 
                 if need_pass:
                     program.append('{}pass'.format(' ' * indent))
