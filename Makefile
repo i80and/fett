@@ -1,10 +1,10 @@
 .PHONY: test lint bench
 
 test:
-	./test.py ./spec/*.yml
+	cd spec && ./test.py ./*.yml
 
 lint:
-	pep8 fett/__init__.py ./setup.py ./test.py ./bench.py
+	pep8 fett/__init__.py ./setup.py ./bench.py ./spec/test.py
 	mypy --strict-optional --disallow-untyped-defs fett/__init__.py
 
 bench:
