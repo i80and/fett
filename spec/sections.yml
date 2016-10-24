@@ -60,6 +60,12 @@ tests:
     template: "[{{if missing}}Found key 'missing'!{{end}}]"
     expected: "[]"
 
+  - name: Loop Else
+    desc: If a loop is not executed, its 'else' block should be rendered.
+    data: { list: [] }
+    template: "{{for x in list}}{{else}}nada{{end}}"
+    expected: "nada"
+
   # Dotted Names
 
   - name: Dotted Names - Truthy

@@ -145,6 +145,9 @@ class Template:
                 if not stack:
                     raise ValueError('"else" without matching "for" or "if"')
 
+                if need_pass:
+                    program.append('{}pass'.format(' ' * indent))
+
                 if stack[-1][0] is TOKEN_FOR:
                     attr = self.transform_expr(stack[-1][1], local_stack)
                     program.append('{}if not {}:'
@@ -216,3 +219,6 @@ class Template:
 
         result = ''.join(['[{}]'.format(repr(x)) for x in path])
         return '__eat_error__(lambda: __data__' + result + ')'
+
+t = Template('{{for x in list}}{{else}}nada{{end}}')
+t.render({'list': []})
