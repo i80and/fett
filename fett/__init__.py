@@ -35,8 +35,8 @@ class Template:
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
-        self.tasks = []  # type: List[Tuple[str, ...]]
 
+        tasks = []  # type: List[Tuple[str, ...]]
         depth = 0
         a = 0
         b = 0
@@ -54,7 +54,7 @@ class Template:
                 skip_newline = 0 if line_start.start() == 0 else 1
                 literal = template[a:line_start.start() + skip_newline]
                 if literal:
-                    self.tasks.append((TOKEN_LITERAL, literal))
+                    tasks.append((TOKEN_LITERAL, literal))
 
                 a = line_end.end()
                 b = line_end.end()
@@ -63,26 +63,26 @@ class Template:
                 if a != b:
                     literal = template[a:b]
                     if literal:
-                        self.tasks.append((TOKEN_LITERAL, literal))
+                        tasks.append((TOKEN_LITERAL, literal))
                 (a, b) = (match.end(), match.end())
 
             # Comment
             if tag.startswith('#'):
-                self.tasks.append((TOKEN_COMMENT, tag))
+                tasks.append((TOKEN_COMMENT, tag))
                 continue
 
             if len(components) >= 4 \
                and components[0] == 'for' \
                and components[2] == 'in':
                 expr = ' '.join(components[3:])
-                self.tasks.append((TOKEN_FOR, components[1], expr))
+                tasks.append((TOKEN_FOR, components[1], expr))
                 depth += 1
             elif len(components) >= 2 and components[0] == 'if':
-                self.tasks.append((TOKEN_IF, ' '.join(components[1:])))
+                tasks.append((TOKEN_IF, ' '.join(components[1:])))
             elif components and components[0] == 'else':
-                self.tasks.append((TOKEN_ELSE,))
+                tasks.append((TOKEN_ELSE,))
             elif components and components[0] == 'end':
-                self.tasks.append((TOKEN_END,))
+                tasks.append((TOKEN_END,))
                 depth -= 1
             else:
                 start_of_line = max(0,
@@ -91,17 +91,17 @@ class Template:
                 while template[start_of_line] in (' ', '\t'):
                     indentation.append(template[start_of_line])
                     start_of_line += 1
-                self.tasks.append((TOKEN_SUB, tag, ''.join(indentation)))
+                tasks.append((TOKEN_SUB, tag, ''.join(indentation)))
 
         literal = template[b:]
         if literal:
-            self.tasks.append((TOKEN_LITERAL, literal))
+            tasks.append((TOKEN_LITERAL, literal))
 
         if depth > 0:
             raise ValueError('Expected "end"')
 
         try:
-            self.program = self._compile()
+            self.program = self._compile(tasks)
         except SyntaxError as err:
             raise err.__class__('{}. Source:\n{}'.format(str(err),
                                                          self.program_source))
@@ -125,14 +125,14 @@ class Template:
             raise err.__class__('{}. Source:\n{}'.format(str(err),
                                                          self.program_source))
 
-    def _compile(self) -> Any:
+    def _compile(self, tasks: List[Tuple[str, ...]]) -> Any:
         indent = 4
         need_pass = False
         local_stack = ['i']  # type: List[str]
         stack = []  # type: List[Tuple[str, ...]]
         program = ['def run(__data__):']
 
-        for task in self.tasks:
+        for task in tasks:
             if task[0] is TOKEN_LITERAL:
                 program.append(indent * ' ' + 'yield ' + repr(task[1]))
                 need_pass = False
