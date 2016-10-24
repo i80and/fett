@@ -1,7 +1,8 @@
+PYTHON:=`which python`
 .PHONY: test lint bench
 
 test:
-	cd spec && ./test.py ./*.yml
+	cd spec && $(PYTHON) ./test.py ./*.yml
 
 lint:
 	pep8 fett/__init__.py ./setup.py ./bench.py ./spec/test.py
