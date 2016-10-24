@@ -1,0 +1,58 @@
+overview: |
+  Fett offers a number of filters that will transform a single input variable.
+tests:
+  - name: Odd
+    desc: True iff the value is an odd integer.
+    data: { list: [1, 2, 3, 4, 5] }
+    template: '{{for x in list}}{{if x odd}}{{x}}{{end}}{{end}}'
+    expected: '135'
+
+  - name: Even
+    desc: True iff the value is an even integer.
+    data: { list: [1, 2, 3, 4, 5] }
+    template: '{{for x in list}}{{if x even}}{{x}}{{end}}{{end}}'
+    expected: '24'
+
+  - name: Car
+    desc: Given a list, returns the first element.
+    data: { list: [1, 2, 3, 4, 5] }
+    template: '{{list car}}'
+    expected: '1'
+
+  - name: Cdr
+    desc: Given a list, returns all but the first element..
+    data: { list: [1, 2, 3, 4, 5] }
+    template: '{{for x in list cdr cdr}}{{x}}{{end}}'
+    expected: '345'
+
+  - name: Len
+    desc: Returns the length of a list.
+    data: { list: [1, 2, 3, 4, 5] }
+    template: '{{list len}}'
+    expected: '5'
+
+  - name: Strip
+    desc: Returns the input string with whitespace on each side removed.
+    data: { value: "  Foo bar  " }
+    template: '{{value strip}}'
+    expected: 'Foo bar'
+
+  - name: Inc
+    desc: Increments an integer. Converts strings to an integer before incrementing.
+    data: { val: 4 }
+    template: '{{val inc inc}}'
+    expected: '6'
+
+  - name: Not
+    desc: Inverts a boolean.
+    data: { boolean: false }
+    template: '{{if boolean not}}Rendered{{end}}'
+    expected: 'Rendered'
+
+  # Combinations
+
+  - name: IncCarCdrCdr
+    desc: Increments the third element of a list.
+    data: { list: [1, 2, 3, 4, 5] }
+    template: '{{list inc car cdr cdr}}'
+    expected: '4'

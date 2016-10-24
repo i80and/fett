@@ -24,13 +24,13 @@ class Template:
     ONLY_WHITESPACE_LEFT = re.compile(r'[^\S\n]*(?:\n|$)')
     ONLY_WHITESPACE_RIGHT = re.compile(r'(?:\n|^)[^\S\n]*$')
     NAME_PAT = re.compile(r'^[a-zA-Z0-9_]+$')
-    FILTERS = {'odd': lambda x: x % 2 != 0,
-               'even': lambda x: x % 2 == 0,
+    FILTERS = {'odd': lambda x: int(x) % 2 != 0,
+               'even': lambda x: int(x) % 2 == 0,
                'car': lambda x: x[0],
                'cdr': lambda x: x[1:],
                'len': lambda x: len(x),
-               'strip': lambda x: x.strip(),
-               'inc': lambda x: x + 1,
+               'strip': lambda x: str(x).strip(),
+               'inc': lambda x: int(x) + 1,
                'not': lambda x: not x}
 
     def __init__(self, template: str) -> None:
