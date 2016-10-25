@@ -81,6 +81,18 @@ tests:
     template: "{{for x in list}}{{else}}nada{{end}}"
     expected: "nada"
 
+  - name: Format
+    desc: Allows a template to substitute a value referred to by another value.
+    data: { x: { y: "\n" }, text: "Foo {{x.y}} bar" }
+    template: '  {{ format text }}'
+    expected: "  Foo \n   bar"
+
+  - name: FormatLoop
+    desc: The format expression should NOT work with loop counters (because "i" shadows the input object).
+    data: { list: ['a', 'b', 'c'], '1': 'z', '2': 'x', '3': 'c' }
+    template: '{{for x in list}}{{format i}}{{end}}'
+    expected: '012'
+
   # Dotted Names
 
   - name: Dotted Names - Truthy

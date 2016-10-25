@@ -36,8 +36,9 @@ Syntax
 Tag Format                                   Description
 ==========================================   ===========
 ``{{ <expression> }}``                       Substitutions_
+``{{ format <name> }}``                      Metaformatting_
 ``{{ if <expression> }}``                    Conditionals_
-``{{ for <expression> in <expression> }}``   Loops_
+``{{ for <name> in <expression> }}``         Loops_
 ``{{ else }}``
 ``{{ end }}``                                Block termination
 ``{{ # <comment> }}``                        Comments_
@@ -77,6 +78,9 @@ strip        Returns the input string with surrounding whitespace removed.
 
 Substitutions
 ~~~~~~~~~~~~~
+
+Metaformatting
+~~~~~~~~~~~~~~
 
 Conditionals
 ~~~~~~~~~~~~

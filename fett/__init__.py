@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Match
 import re
 import sys
 
@@ -6,6 +6,7 @@ TOKEN_COMMENT = sys.intern('comment')
 TOKEN_ELSE = sys.intern('else')
 TOKEN_END = sys.intern('end')
 TOKEN_FOR = sys.intern('for')
+TOKEN_FORMAT = sys.intern('format')
 TOKEN_IF = sys.intern('if')
 TOKEN_LITERAL = sys.intern('literal')
 TOKEN_SUB = sys.intern('sub')
@@ -102,14 +103,12 @@ class Template:
             elif components and components[0] == 'end':
                 tasks.append((TOKEN_END,))
                 depth -= 1
+            elif len(components) == 2 and components[0] == 'format':
+                indentation = self.get_indentation(template, match)
+                tasks.append((TOKEN_FORMAT, components[1], indentation))
             else:
-                start_of_line = max(0,
-                                    template.rfind('\n', 0, match.start()) + 1)
-                indentation = []
-                while template[start_of_line] in (' ', '\t'):
-                    indentation.append(template[start_of_line])
-                    start_of_line += 1
-                tasks.append((TOKEN_SUB, tag, ''.join(indentation)))
+                indentation = self.get_indentation(template, match)
+                tasks.append((TOKEN_SUB, tag, indentation))
 
         literal = template[b:]
         if literal:
@@ -131,6 +130,7 @@ class Template:
         """Render this compiled template into a string using the given data."""
         env = self.FILTERS.copy()
         env['__eat_error__'] = eat_error
+        env['miniformat'] = self.miniformat
 
         gobj = {}  # type: Dict[str, Any]
         program = eval(self.program, env, gobj)
@@ -209,12 +209,20 @@ class Template:
                 program.append('{}yield str({}).replace("\\n", "\\n" + {})'
                                .format(' ' * indent, getter, repr(task[2])))
                 need_pass = False
+            elif task[0] is TOKEN_FORMAT:
+                getter = self.transform_expr(task[1], local_stack)
+                program.append('{}yield miniformat(str({}), __data__)'
+                               '.replace("\\n", "\\n" + {})'
+                               .format(' ' * indent, getter, repr(task[2])))
+                need_pass = False
 
         self.program_source = '\n'.join(program)
         return compile(self.program_source, 'renderer', 'exec')
 
     @classmethod
     def is_interpolation(cls, tag: str) -> bool:
+        """Check if a tag is interpolating or just a block structure
+           or comment"""
         return not (tag.startswith('if ') or tag.startswith('for ') or
                     tag.startswith('#') or tag in ('else', 'end'))
 
@@ -242,7 +250,7 @@ class Template:
         path = name.split('.')
 
         from_local = False
-        if len(path) >= 1 and path[0] in unmangle:
+        if len(path) >= 1 and unmangle and path[0] in unmangle:
             from_local = True
 
         if from_local:
@@ -262,3 +270,29 @@ class Template:
             raise ValueError('Illegal name: ' + name)
 
         return name
+
+    @classmethod
+    def get_indentation(cls, template: str, match: Match) -> str:
+        """Get the indentation string at a given point in the template."""
+        start_of_line = max(0, template.rfind('\n', 0, match.start()) + 1)
+        indentation = []
+        while template[start_of_line] in (' ', '\t'):
+            indentation.append(template[start_of_line])
+            start_of_line += 1
+
+        return ''.join(indentation)
+
+    @classmethod
+    def miniformat(cls, template: str, data: Any) -> str:
+        """Simple string formatting routine."""
+        def handle(match: Match) -> Any:
+            cursor = data
+            path = match.group(0)[2:-2].split('.')[::-1]
+            while path:
+                element = cls.vet_name(path.pop())
+                cursor = cursor[element]
+
+            return cursor
+
+        return cls.PAT.sub(lambda match: eat_error(lambda: handle(match)),
+                           template)
