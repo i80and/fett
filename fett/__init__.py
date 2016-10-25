@@ -47,7 +47,8 @@ class Template:
                'len': lambda x: len(x),
                'strip': lambda x: str(x).strip(),
                'inc': lambda x: int(x) + 1,
-               'not': lambda x: not x}
+               'not': lambda x: not x,
+               'split': lambda x: str(x).split()}
 
     def __init__(self, template: str) -> None:
         self.program_source = ''

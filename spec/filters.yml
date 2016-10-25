@@ -49,6 +49,12 @@ tests:
     template: '{{if boolean not}}Rendered{{end}}'
     expected: 'Rendered'
 
+  - name: Split
+    desc: Splits a value by whitespace
+    data: { values: '1 2 3' }
+    template: '{{for x in values split}}{{x inc}}{{end}}'
+    expected: '234'
+
   # Combinations
 
   - name: IncCarCdrCdr

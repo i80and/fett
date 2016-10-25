@@ -64,14 +64,15 @@ The full list of available filters follows.
 ===========  ======
 Filter Name  Effect
 ===========  ======
-odd          Returns true iff its input is representable as an odd integer.
-even         Returns true iff its input is representable as an even integer.
 car          Returns the first element of a list.
 cdr          Returns all but the first element of a list.
-len          Returns the length of a list.
-strip        Returns the input string with surrounding whitespace removed.
+even         Returns true iff its input is representable as an even integer.
 inc          Increments a value representable as an integer by one.
+len          Returns the length of a list.
 not          Returns the inverse of a boolean.
+odd          Returns true iff its input is representable as an odd integer.
+split        Splits a value into a list by whitespace.
+strip        Returns the input string with surrounding whitespace removed.
 ===========  ======
 
 Substitutions
