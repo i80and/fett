@@ -176,7 +176,13 @@ tests:
     expected: '|=|'
 
   - name: Empty Block
-    desc: 'Empty blocks should be no-ops.'
+    desc: Empty blocks should be no-ops.
     data: { boolean: true }
     template: "{{if boolean}}{{end}}"
     expected: ""
+
+  - name: Indentation
+    desc: Each line of substituted text should be properly indented.
+    data: { text: "foo\nbar\nbaz" }
+    template: "    {{text}} {{text}}"
+    expected: "    foo\n    bar\n    baz foo\n    bar\n    baz"
