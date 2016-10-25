@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, List, Tuple, Iterable
+from typing import Any, Callable, Dict, List, Tuple
 import re
 import sys
 
@@ -12,10 +12,26 @@ TOKEN_SUB = sys.intern('sub')
 
 
 def eat_error(f: Callable[[], Any]) -> Any:
+    """Call f(), returning an empty string on error."""
     try:
         return f()
     except (IndexError, KeyError):
         return ''
+
+
+class VariableStack:
+    """Tracks variable scopes and loop counter depth."""
+    __slots__ = ('stack', 'loop_counter')
+
+    def __init__(self) -> None:
+        self.stack = []  # type: List[str]
+        self.loop_counter = 0
+
+    def __contains__(self, value: str) -> bool:
+        if value == 'i' and self.loop_counter > 0:
+            return True
+
+        return value in self.stack
 
 
 class Template:
@@ -128,7 +144,7 @@ class Template:
     def _compile(self, tasks: List[Tuple[str, ...]]) -> Any:
         indent = 4
         need_pass = False
-        local_stack = ['i']  # type: List[str]
+        local_stack = VariableStack()
         stack = []  # type: List[Tuple[str, ...]]
         program = ['def run(__data__):']
 
@@ -142,7 +158,8 @@ class Template:
                 program.append('{}for i, {} in enumerate({}):'
                                .format(' ' * indent, iter_name, attr))
                 stack.append((TOKEN_FOR, task[2]))
-                local_stack.append(task[1])
+                local_stack.stack.append(task[1])
+                local_stack.loop_counter += 1
                 need_pass = True
                 indent += 4
             elif task[0] is TOKEN_IF:
@@ -170,7 +187,8 @@ class Template:
                 need_pass = True
             elif task[0] is TOKEN_END:
                 if stack[-1][0] is TOKEN_FOR:
-                    local_stack.pop()
+                    local_stack.stack.pop()
+                    local_stack.loop_counter -= 1
 
                 stack.pop()
 
@@ -196,7 +214,7 @@ class Template:
                     tag.startswith('#') or tag in ('else', 'end'))
 
     @classmethod
-    def transform_expr(cls, expr: str, unmangle: Iterable[str]) -> str:
+    def transform_expr(cls, expr: str, unmangle: VariableStack) -> str:
         """Transform a space-delimited sequence of tokens into a chained
            sequence of function calls."""
         components = expr.split(' ')
@@ -214,7 +232,7 @@ class Template:
         return result
 
     @classmethod
-    def dot_to_subscript(cls, name: str, unmangle: Iterable[str]) -> str:
+    def dot_to_subscript(cls, name: str, unmangle: VariableStack) -> str:
         """Transform a.b.c into data['a']['b']['c']."""
         path = name.split('.')
 

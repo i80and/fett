@@ -167,6 +167,18 @@ tests:
     template: "#{{if boolean}}\n/\n  {{end}}"
     expected: "#\n/\n"
 
+  - name: Loop Counter
+    desc: Loop structures have an "i" variable giving the loop iteration.
+    data: { list: ['a', 'b', 'c'] }
+    template: "{{for x in list}}{{x}}:{{i}} {{end}}"
+    expected: "a:0 b:1 c:2 "
+
+  - name: Loop Counter Outside Loop
+    desc: ...but "i" should NOT exist without a loop.
+    data: { i: 1 }
+    template: "{{i}}"
+    expected: "1"
+
   # Whitespace Insensitivity
 
   - name: Padding
