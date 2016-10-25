@@ -35,12 +35,12 @@ Syntax
 ==========================================   ===========
 Tag Format                                   Description
 ==========================================   ===========
-``{{ <expression> }}``                       `Substitution <subsblock>`_
-``{{ if <expression> }}``                    `Conditional <ifblock>`_
-``{{ for <expression> in <expression> }}``   `Loop <forblock>`_
+``{{ <expression> }}``                       Substitutions_
+``{{ if <expression> }}``                    Conditionals_
+``{{ for <expression> in <expression> }}``   Loops_
 ``{{ else }}``
 ``{{ end }}``                                Block termination
-``{{ # <comment> }}``                        `Comment <comment>`_
+``{{ # <comment> }}``                        Comments_
 ==========================================   ===========
 
 Spaces between tag opening/closing delimiters are optional.
@@ -48,8 +48,7 @@ Spaces between tag opening/closing delimiters are optional.
 Expressions
 ~~~~~~~~~~~
 
-An **expression** is given for `substitutions <subsblock>`,
-`conditionals <ifblock>`, and `loops <forblock>`.
+An **expression** is given for Substitutions_, Conditionals_, and Loops_.
 
 Expressions take the following form:
 
@@ -75,22 +74,14 @@ inc          Increments a value representable as an integer by one.
 not          Returns the inverse of a boolean.
 ===========  ======
 
-.. _subsblock:
-
 Substitutions
 ~~~~~~~~~~~~~
-
-.. _ifblock:
 
 Conditionals
 ~~~~~~~~~~~~
 
-.. _forblock:
-
 Loops
 ~~~~~
-
-.. _comment:
 
 Comments
 ~~~~~~~~
