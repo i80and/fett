@@ -96,6 +96,7 @@ class Template:
                 depth += 1
             elif len(components) >= 2 and components[0] == 'if':
                 tasks.append((TOKEN_IF, ' '.join(components[1:])))
+                depth += 1
             elif components and components[0] == 'else':
                 tasks.append((TOKEN_ELSE,))
             elif components and components[0] == 'end':
@@ -116,6 +117,9 @@ class Template:
 
         if depth > 0:
             raise ValueError('Expected "end"')
+
+        if depth < 0:
+            raise ValueError('Umatched "end"')
 
         try:
             self.program = self._compile(tasks)
