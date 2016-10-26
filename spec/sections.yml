@@ -83,7 +83,7 @@ tests:
 
   - name: Format
     desc: Allows a template to substitute a value referred to by another value.
-    data: { x: { y: "\n" }, text: "Foo {{x.y}} bar" }
+    data: { x: { y: "\n" }, text: "Foo {{  x.y }} bar" }
     template: '  {{ format text }}'
     expected: "  Foo \n   bar"
 

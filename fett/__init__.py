@@ -289,7 +289,7 @@ class Template:
             cursor = data
             path = match.group(0)[2:-2].split('.')[::-1]
             while path:
-                element = cls.vet_name(path.pop())
+                element = cls.vet_name(path.pop().strip())
                 cursor = cursor[element]
 
             return cursor
