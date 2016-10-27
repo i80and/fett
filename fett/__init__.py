@@ -2,7 +2,11 @@ from typing import Any, Callable, Dict, List, Tuple, Match
 import re
 import sys
 
+PrimitiveTask = Tuple[str, ...]
+Task = Tuple[Any, ...]
+
 TOKEN_COMMENT = sys.intern('comment')
+TOKEN_COMPOUND = sys.intern('compound')
 TOKEN_ELSE = sys.intern('else')
 TOKEN_END = sys.intern('end')
 TOKEN_FOR = sys.intern('for')
@@ -54,7 +58,7 @@ class Template:
     def __init__(self, template: str) -> None:
         self.program_source = ''
 
-        tasks = []  # type: List[Tuple[str, ...]]
+        tasks = []  # type: List[PrimitiveTask]
         depth = 0
         a = 0
         b = 0
@@ -120,8 +124,26 @@ class Template:
         if depth < 0:
             raise ValueError('Umatched "end"')
 
+        # Peephole optimize token stream
+        yields = []  # type: List[PrimitiveTask]
+        optimized = []  # type: List[Task]
+        for task in tasks:
+            if (task[0] is TOKEN_SUB or task[0] is TOKEN_FORMAT or
+               task[0] is TOKEN_LITERAL):
+                yields.append(task)
+                continue
+
+            if yields:
+                optimized.append((TOKEN_COMPOUND, yields))
+                yields = []
+
+            optimized.append(task)
+
+        if yields:
+            optimized.append((TOKEN_COMPOUND, yields))
+
         try:
-            self.program = self._compile(tasks)
+            self.program = self._compile(optimized)
         except SyntaxError as err:
             raise err.__class__('{}. Source:\n{}'.format(str(err),
                                                          self.program_source))
@@ -137,26 +159,45 @@ class Template:
         program = gobj['run']
 
         try:
-            generator = program(data)
-            if generator:
-                return ''.join([x for x in generator])
-
-            return ''
+            result = program(data)
+            return ''.join(result)
         except Exception as err:
             raise err.__class__('{}. Source:\n{}'.format(str(err),
                                                          self.program_source))
 
-    def _compile(self, tasks: List[Tuple[str, ...]]) -> Any:
+    def _compile(self, tasks: List[Task]) -> Any:
         indent = 4
         need_pass = False
         local_stack = VariableStack()
-        stack = []  # type: List[Tuple[str, ...]]
-        program = ['def run(__data__):']
+        stack = []  # type: List[Task]
+        program = ['def run(__data__):', '    result = []']
+
+        def expand_expr(task: PrimitiveTask) -> str:
+            result = ''
+
+            if task[0] is TOKEN_LITERAL:
+                need_pass = False
+                return repr(task[1])
+            elif task[0] is TOKEN_SUB:
+                getter = self.transform_expr(task[1], local_stack)
+                need_pass = False
+                return 'str({}).replace("\\n", "\\n" + {})'.format(
+                    getter, repr(task[2]))
+            elif task[0] is TOKEN_FORMAT:
+                getter = self.transform_expr(task[1], local_stack)
+                need_pass = False
+                return ('miniformat(str({}), __data__)'
+                        '.replace("\\n", "\\n" + {})'
+                        .format(getter, repr(task[2])))
+
+            assert False
 
         for task in tasks:
-            if task[0] is TOKEN_LITERAL:
-                program.append(indent * ' ' + 'yield ' + repr(task[1]))
-                need_pass = False
+            if (task[0] is TOKEN_LITERAL or task[0] is TOKEN_SUB or
+               task[0] is TOKEN_FORMAT):
+                expr = expand_expr(task)
+                program.append('{}result.append({})'
+                               .format(' ' * indent, expr))
             elif task[0] is TOKEN_FOR:
                 iter_name = self.vet_name(task[1])
                 attr = self.transform_expr(task[2], local_stack)
@@ -204,18 +245,13 @@ class Template:
                 indent -= 4
                 if indent < 4:
                     raise ValueError('Unmatched "end"')
-            elif task[0] is TOKEN_SUB:
-                getter = self.transform_expr(task[1], local_stack)
-                program.append('{}yield str({}).replace("\\n", "\\n" + {})'
-                               .format(' ' * indent, getter, repr(task[2])))
-                need_pass = False
-            elif task[0] is TOKEN_FORMAT:
-                getter = self.transform_expr(task[1], local_stack)
-                program.append('{}yield miniformat(str({}), __data__)'
-                               '.replace("\\n", "\\n" + {})'
-                               .format(' ' * indent, getter, repr(task[2])))
-                need_pass = False
+            elif task[0] is TOKEN_COMPOUND:
+                expr = ("''.join((" + ''.join(expand_expr(t) +
+                                              ',' for t in task[1]) + '))')
+                program.append('{}result.append({})'
+                               .format(' ' * indent, expr))
 
+        program.append('    return result')
         self.program_source = '\n'.join(program)
         return compile(self.program_source, 'renderer', 'exec')
 
