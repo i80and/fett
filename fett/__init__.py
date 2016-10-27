@@ -202,8 +202,6 @@ class Template:
                     need_pass = False
 
                 indent -= 4
-                if indent < 4:
-                    raise ValueError('Unmatched "end"')
             elif task[0] is TOKEN_SUB:
                 getter = self.transform_expr(task[1], local_stack)
                 program.append('{}yield str({}).replace("\\n", "\\n" + {})'
