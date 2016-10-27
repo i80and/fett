@@ -81,14 +81,44 @@ tests:
     template: "{{for x in list}}{{else}}nada{{end}}"
     expected: "nada"
 
+  - name: Empty1
+    desc: Empty formats should return an empty string.
+    data: { }
+    template: '{{}}'
+    expected: ''
+
+  - name: Empty2
+    desc: Empty formats should return an empty string.
+    data: { }
+    template: '{{ }}'
+    expected: ''
+
   - name: Format
     desc: Allows a template to substitute a value referred to by another value.
     data: { x: { y: "\n" }, text: "Foo {{  x.y }} bar" }
     template: '  {{ format text }}'
     expected: "  Foo \n   bar"
 
+  - name: FormatFilter
+    desc: Filters should work with the format tag.
+    data: { list: [1, 2, 3, 4, 5], text: "{{ list inc car cdr cdr }}" }
+    template: '{{ format text }}'
+    expected: '4'
+
+  - name: FormatEmpty1
+    desc: Empty formats should return an empty string.
+    data: { text: "{{}}" }
+    template: '{{ format text }}'
+    expected: ''
+
+  - name: FormatEmpty2
+    desc: Empty formats should return an empty string.
+    data: { text: "{{ }}" }
+    template: '{{ format text }}'
+    expected: ''
+
   - name: FormatLoop
-    desc: The format expression should NOT work with loop counters (because "i" shadows the input object).
+    desc: The format tag should NOT work with loop counters (because "i" shadows the input object).
     data: { list: ['a', 'b', 'c'], '1': 'z', '2': 'x', '3': 'c' }
     template: '{{for x in list}}{{format i}}{{end}}'
     expected: '012'

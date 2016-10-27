@@ -37,7 +37,7 @@ class VariableStack:
 
 class Template:
     """A compiled Fett template."""
-    PAT = re.compile(r'\{\{[^{]+\}\}')
+    PAT = re.compile(r'\{\{[^{]*\}\}')
     ONLY_WHITESPACE_LEFT = re.compile(r'[^\S\n]*(?:\n|$)')
     ONLY_WHITESPACE_RIGHT = re.compile(r'(?:\n|^)[^\S\n]*$')
     NAME_PAT = re.compile(r'^[a-zA-Z0-9_]+$')
@@ -232,6 +232,9 @@ class Template:
            sequence of function calls."""
         components = expr.split(' ')
         result = components[0]
+        if not result:
+            return ''
+
         components = components[1:]
         result = cls.dot_to_subscript(result, unmangle)
 
@@ -267,7 +270,7 @@ class Template:
     def vet_name(cls, name: str) -> str:
         """Check if a name (field name or iteration variable) is legal."""
         if not cls.NAME_PAT.match(name):
-            raise ValueError('Illegal name: ' + name)
+            raise ValueError('Illegal name: ' + repr(name))
 
         return name
 
@@ -287,12 +290,26 @@ class Template:
         """Simple string formatting routine."""
         def handle(match: Match) -> Any:
             cursor = data
-            path = match.group(0)[2:-2].split('.')[::-1]
+            inner = match.group(0)[2:-2].strip()
+            if not inner:
+                return ''
+
+            components = inner.split(' ')
+            path = components[0].split('.')[::-1]
+
+            components = components[1:]
             while path:
                 element = cls.vet_name(path.pop().strip())
                 cursor = cursor[element]
 
-            return cursor
+            while components:
+                component = components.pop()
+                if component not in cls.FILTERS:
+                    raise ValueError('Unknown filter: ' + component)
+
+                cursor = cls.FILTERS[component](cursor)
+
+            return str(cursor)
 
         return cls.PAT.sub(lambda match: eat_error(lambda: handle(match)),
                            template)
