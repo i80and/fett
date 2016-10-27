@@ -55,6 +55,18 @@ tests:
     template: '{{for x in values split}}{{x inc}}{{end}}'
     expected: '234'
 
+  - name: UnknownFilter
+    desc: Unknown filters should result in an error
+    data: { x: 0 }
+    template: '{{x foobarbaz}}'
+    error: true
+
+  - name: UnknownFormatFilter
+    desc: Unknown format filters should result in an error
+    data: { y: 1, x: '{{y foobarbaz}}' }
+    template: '{{format x}}'
+    error: true
+
   # Combinations
 
   - name: IncCarCdrCdr

@@ -13,16 +13,23 @@ def main(args):
         for test in data['tests']:
             name = test['name']
             template = test['template']
-            expected = test['expected']
+            expected = test.get('expected', None)
             data = test['data']
 
             print(path, name)
-            compiled = fett.Template(template)
-            rendered = compiled.render(data)
+
+            try:
+                compiled = fett.Template(template)
+                rendered = compiled.render(data)
+            except ValueError as err:
+                if not test.get('error', False):
+                    raise err  # pragma: no cover
+
+                continue
 
             try:
                 assert rendered == expected
-            except AssertionError as err:
+            except AssertionError as err:  # pragma: no cover
                 print('Got:      ', repr(rendered))
                 print('Expected: ', repr(expected))
                 raise err

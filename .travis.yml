@@ -8,4 +8,4 @@ python:
   - "3.5"
 install:
   - pip install . pyyaml
-script: make test
+script: make test-travis

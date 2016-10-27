@@ -240,3 +240,29 @@ tests:
     data: { text: "foo\nbar\nbaz" }
     template: "    {{text}} {{text}}"
     expected: "    foo\n    bar\n    baz foo\n    bar\n    baz"
+
+  # Errors
+
+  - name: ExpectedEnd
+    desc:
+    data: { boolean: true }
+    template: '{{if boolean}}foo'
+    error: true
+
+  - name: UnexpectedEnd
+    desc:
+    data: { boolean: true }
+    template: 'Foo{{end}}'
+    error: true
+
+  - name: UnmatchedElse
+    desc:
+    data: { boolean: true }
+    template: '{{else}}foo'
+    error: true
+
+  - name: IllegalName
+    desc:
+    data: { list: [] }
+    template: '{{for foo(bar) in list}}{{end}}'
+    error: true
