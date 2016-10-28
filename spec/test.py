@@ -21,7 +21,7 @@ def main(args):
             try:
                 compiled = fett.Template(template)
                 rendered = compiled.render(data)
-            except ValueError as err:
+            except (ValueError, TypeError) as err:
                 if not test.get('error', False):
                     raise err  # pragma: no cover
 

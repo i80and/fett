@@ -20,16 +20,22 @@ tests:
     expected: '1'
 
   - name: Cdr
-    desc: Given a list, returns all but the first element..
+    desc: Given a list, returns all but the first element.
     data: { list: [1, 2, 3, 4, 5] }
     template: '{{for x in list cdr cdr}}{{x}}{{end}}'
     expected: '345'
 
   - name: Len
-    desc: Returns the length of a list.
-    data: { list: [1, 2, 3, 4, 5] }
-    template: '{{list len}}'
-    expected: '5'
+    desc: Returns the length of a list, string, or object.
+    data: { list: [1, 2, 3, 4, 5], str: "foo", obj: {"x": 1} }
+    template: '{{list len}} {{str len}} {{obj len}}'
+    expected: '5 3 1'
+
+  - name: LenInteger
+    desc: Len should return an error if given an integer.
+    data: { x: 5 }
+    template: '{{x len}}'
+    error: true
 
   - name: Strip
     desc: Returns the input string with whitespace on each side removed.
@@ -50,7 +56,7 @@ tests:
     expected: 'Rendered'
 
   - name: Split
-    desc: Splits a value by whitespace
+    desc: Splits a string by whitespace
     data: { values: '1 2 3' }
     template: '{{for x in values split}}{{x inc}}{{end}}'
     expected: '234'
