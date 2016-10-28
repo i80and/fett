@@ -275,7 +275,7 @@ class Template:
     @classmethod
     def get_indentation(cls, template: str, match: Match) -> str:
         """Get the indentation string at a given point in the template."""
-        start_of_line = max(0, template.rfind('\n', 0, match.start()) + 1)
+        start_of_line = template.rfind('\n', 0, match.start()) + 1
         indentation = []
         while template[start_of_line] in (' ', '\t'):
             indentation.append(template[start_of_line])
