@@ -61,6 +61,12 @@ tests:
     template: '{{for x in values split}}{{x inc}}{{end}}'
     expected: '234'
 
+  - name: Escape
+    desc: Force escaping of HTML special characters
+    data: { str: "&<>\"'" }
+    template: '{{str escape}}'
+    expected: '&amp;&lt;&gt;&quot;&#x27;'
+
   - name: UnknownFilter
     desc: Unknown filters should result in an error
     data: { x: 0 }

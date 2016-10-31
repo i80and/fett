@@ -12,6 +12,15 @@ TOKEN_LITERAL = sys.intern('literal')
 TOKEN_SUB = sys.intern('sub')
 
 
+def escape(s: str) -> str:
+    """Escape HTML entity characters."""
+    s = s.replace('&', '&amp;')
+    s = s.replace('<', '&lt;')
+    s = s.replace('>', '&gt;')
+    s = s.replace('"', '&quot;')
+    return s.replace('\'', '&#x27;')
+
+
 def eat_error(f: Callable[[], Any]) -> Any:
     """Call f(), returning an empty string on error."""
     try:
@@ -49,7 +58,8 @@ class Template:
                'strip': lambda x: str(x).strip(),
                'inc': lambda x: int(x) + 1,
                'not': lambda x: not x,
-               'split': lambda x: str(x).split()}
+               'split': lambda x: str(x).split(),
+               'escape': escape}
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
