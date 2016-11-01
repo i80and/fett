@@ -47,6 +47,7 @@ class VariableStack:
 class Template:
     """A compiled Fett template."""
     PAT = re.compile(r'\{\{[^{]*\}\}')
+    PAT_TAGS = re.compile(r'<[^>]+>')
     ONLY_WHITESPACE_LEFT = re.compile(r'[^\S\n]*(?:\n|$)')
     ONLY_WHITESPACE_RIGHT = re.compile(r'(?:\n|^)[^\S\n]*$')
     NAME_PAT = re.compile(r'^[a-zA-Z0-9_]+$')
@@ -59,7 +60,8 @@ class Template:
                'inc': lambda x: int(x) + 1,
                'not': lambda x: not x,
                'split': lambda x: str(x).split(),
-               'escape': escape}
+               'escape': escape,
+               'striptags': lambda x: Template.PAT_TAGS.sub('', x)}
 
     def __init__(self, template: str) -> None:
         self.program_source = ''

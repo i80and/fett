@@ -67,6 +67,14 @@ tests:
     template: '{{str escape}}'
     expected: '&amp;&lt;&gt;&quot;&#x27;'
 
+  - name: StripTags
+    desc: |
+      Remove HTML tags. This should not handle nested tags intelligently
+      without a major spec version bump.
+    data: { str: "Foo <i>bar</i <nesting></nesting>><b>meh</b>" }
+    template: '{{str striptags}}'
+    expected: 'Foo bar>meh'
+
   - name: UnknownFilter
     desc: Unknown filters should result in an error
     data: { x: 0 }
