@@ -69,6 +69,7 @@ car          Returns the first element of a list.
 cdr          Returns all but the first element of a list.
 dec          Decrements a value representable as an integer by one.
 even         Returns true iff its input is representable as an even integer.
+escape       Encodes `&`, `<`, `>`, `"`, and `'` characters with HTML entities.
 inc          Increments a value representable as an integer by one.
 len          Returns the length of a list.
 not          Returns the inverse of a boolean.
@@ -77,6 +78,7 @@ negative     Returns true iff its input is representable as an integer < 0.
 positive     Returns true iff its input is representable as an integer > 0.
 split        Splits a value into a list by whitespace.
 strip        Returns the input string with surrounding whitespace removed.
+striptags    Remove HTML tags from a value.
 timesNegOne  Returns int(input) * -1
 zero         Returns true iff the input is zero
 ===========  ======
