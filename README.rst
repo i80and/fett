@@ -67,11 +67,13 @@ Filter Name  Effect
 ===========  ======
 car          Returns the first element of a list.
 cdr          Returns all but the first element of a list.
+dec          Decrements a value representable as an integer by one.
 even         Returns true iff its input is representable as an even integer.
 inc          Increments a value representable as an integer by one.
 len          Returns the length of a list.
 not          Returns the inverse of a boolean.
 odd          Returns true iff its input is representable as an odd integer.
+positive     Returns true iff its input is a number > 0.
 split        Splits a value into a list by whitespace.
 strip        Returns the input string with surrounding whitespace removed.
 zero         Returns true iff the input is zero

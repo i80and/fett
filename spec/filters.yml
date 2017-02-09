@@ -49,11 +49,35 @@ tests:
     template: '{{val inc inc}}'
     expected: '6'
 
+  - name: Dec
+    desc: Decrements an integer. Converts strings to an integer before incrementing.
+    data: { val: 4 }
+    template: '{{val dec dec}}'
+    expected: '2'
+
   - name: Not
     desc: Inverts a boolean.
     data: { boolean: false }
     template: '{{if boolean not}}Rendered{{end}}'
     expected: 'Rendered'
+
+  - name: PositiveTrue
+    desc: Return true given a positive number.
+    data: { x: 5 }
+    template: '{{if x positive}}Rendered{{end}}'
+    expected: 'Rendered'
+
+  - name: PositiveZero
+    desc: Return false given zero.
+    data: { x: 0 }
+    template: '{{if x positive}}Rendered{{end}}'
+    expected: ''
+
+  - name: PositiveFalse
+    desc: Return false given a negative number.
+    data: { x: -1 }
+    template: '{{if x positive}}Rendered{{end}}'
+    expected: ''
 
   - name: Split
     desc: Splits a string by whitespace
