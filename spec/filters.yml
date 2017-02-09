@@ -75,6 +75,18 @@ tests:
     template: '{{str striptags}}'
     expected: 'Foo bar>meh'
 
+  - name: ZeroTrue
+    desc: Check if a value is zero.
+    data: { x: 0 }
+    template: '{{ if x zero }}Zero{{ end }}'
+    expected: 'Zero'
+
+  - name: ZeroFalse
+    desc: Check if a nonzero value is zero.
+    data: { x: 1 }
+    template: '{{ if x zero }}Zero{{ end }}'
+    expected: ''
+
   - name: UnknownFilter
     desc: Unknown filters should result in an error
     data: { x: 0 }
@@ -94,3 +106,10 @@ tests:
     data: { list: [1, 2, 3, 4, 5] }
     template: '{{list inc car cdr cdr}}'
     expected: '4'
+
+  - name: NotZero
+    desc: Inverts the zero filter
+    data: { x: 5 }
+    template: '{{ if x zero not }}Zero{{ end }}'
+    expected: 'Zero'
+

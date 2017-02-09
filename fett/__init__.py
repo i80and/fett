@@ -61,7 +61,8 @@ class Template:
                'not': lambda x: not x,
                'split': lambda x: str(x).split(),
                'escape': escape,
-               'striptags': lambda x: Template.PAT_TAGS.sub('', x)}
+               'striptags': lambda x: Template.PAT_TAGS.sub('', x),
+               'zero': lambda x: x == 0}
 
     def __init__(self, template: str) -> None:
         self.program_source = ''

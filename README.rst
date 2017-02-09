@@ -74,6 +74,7 @@ not          Returns the inverse of a boolean.
 odd          Returns true iff its input is representable as an odd integer.
 split        Splits a value into a list by whitespace.
 strip        Returns the input string with surrounding whitespace removed.
+zero         Returns true iff the input is zero
 ===========  ======
 
 Substitutions
