@@ -54,7 +54,7 @@ class BuildPy27(_build_py):
         except (ValueError, IOError) as err:
             print('3to2 error (%s => %s): %s' % (source, target, err))
 
-VERSION = '0.2.1'
+VERSION = '0.2.1.dev0'
 
 CLASSIFIERS = (
     'Development Status :: 4 - Beta',
