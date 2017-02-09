@@ -79,6 +79,24 @@ tests:
     template: '{{if x positive}}Rendered{{end}}'
     expected: ''
 
+  - name: NegativeTrue
+    desc: Return true given a negative number.
+    data: { x: -5 }
+    template: '{{if x negative}}Rendered{{end}}'
+    expected: 'Rendered'
+
+  - name: NegativeZero
+    desc: Return false given zero.
+    data: { x: 0 }
+    template: '{{if x negative}}Rendered{{end}}'
+    expected: ''
+
+  - name: NegativeFalse
+    desc: Return false given a positive number.
+    data: { x: 1 }
+    template: '{{if x negative}}Rendered{{end}}'
+    expected: ''
+
   - name: Split
     desc: Splits a string by whitespace
     data: { values: '1 2 3' }
@@ -98,6 +116,30 @@ tests:
     data: { str: "Foo <i>bar</i <nesting></nesting>><b>meh</b>" }
     template: '{{str striptags}}'
     expected: 'Foo bar>meh'
+
+  - name: timesNegOnePositive
+    desc: Multiply a positive value by -1.
+    data: { x: 1 }
+    template: '{{ x timesNegOne }}'
+    expected: '-1'
+
+  - name: timesNegOnePositiveString
+    desc: Multiply a positive string value by -1.
+    data: { x: '1' }
+    template: '{{ x timesNegOne }}'
+    expected: '-1'
+
+  - name: timesNegOneNegative
+    desc: Multiply a negative value by -1.
+    data: { x: -1 }
+    template: '{{ x timesNegOne }}'
+    expected: '1'
+
+  - name: timesNegOneNegativeString
+    desc: Multiply a negative string value by -1.
+    data: { x: '-1' }
+    template: '{{ x timesNegOne }}'
+    expected: '1'
 
   - name: ZeroTrue
     desc: Check if a value is zero.
