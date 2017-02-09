@@ -156,7 +156,7 @@ class Template:
         try:
             generator = program(data)
             if generator:
-                return ''.join([x for x in generator])
+                return ''.join(generator)
 
             return ''
         except Exception as err:
