@@ -66,7 +66,7 @@ class Template:
                'split': lambda x: str(x).split(),
                'escape': escape,
                'striptags': lambda x: Template.PAT_TAGS.sub('', x),
-               'zero': lambda x: x == 0}
+               'zero': lambda x: x == 0}  # type: Dict[str, Any]
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
