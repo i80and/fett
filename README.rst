@@ -84,7 +84,7 @@ zero         Returns true iff the input is zero
 ===========  ======
 
 ============  ======
-Filter Name  Effect
+Filter Name   Effect
 ============  ======
 add(n)        Increments a value representable as an integer by `n`.
 minus(n)      Decrements a value representable as an integer by `n`.
