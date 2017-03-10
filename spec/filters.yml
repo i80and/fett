@@ -179,6 +179,18 @@ tests:
     template: '{{ x minus(4) }}{{ y minus(2) }}'
     expected: '13'
 
+  - name: Equal
+    desc: Equal
+    data: { x: 5, y: "5" }
+    template: '{{ if x equal(5) }}true{{ end }}{{ if y equal(5) }}true{{end}}'
+    expected: 'truetrue'
+
+  - name: EqualFalse
+    desc: EqualFalse
+    data: { x: 10, y: "foo" }
+    template: '{{ if x equal(5) }}true{{ else }}false{{ end }}{{ if y equal(5) }}true{{ else }}false{{end}}'
+    expected: 'falsefalse'
+
   # Combinations
 
   - name: IncCarCdrCdr

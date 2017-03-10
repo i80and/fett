@@ -70,7 +70,8 @@ class Template:
                'zero': lambda x: x == 0,
 
                'plus': lambda x, n: int(x) + int(n),
-               'minus': lambda x, n: int(x) - int(n)}  # type: Dict[str, Any]
+               'minus': lambda x, n: int(x) - int(n),
+               'equal': lambda x1, x2: str(x1) == str(x2)}  # type: Dict[str, Any]
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
