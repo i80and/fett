@@ -89,13 +89,17 @@ timesNegOne  Returns int(input) * -1
 zero         Returns true iff the input is zero
 ===========  ======
 
-============  ======
-Filter Name   Effect
-============  ======
-add(n)        Increments a value representable as an integer by `n`.
-minus(n)      Decrements a value representable as an integer by `n`.
-equal(value)  Returns true iff a value equals the given value.
-============  ======
+=====================  ======
+Filter Name            Effect
+=====================  ======
+add(n)                 Increments a value representable as an integer by `n`.
+minus(n)               Decrements a value representable as an integer by `n`.
+equal(value)           Returns true iff a value equals the given value.
+lessThan(n)            Returns true iff n < the given value.
+lessThanOrEqual(n)     Returns true iff n <= the given value.
+greaterThan(n)         Returns true iff n > the given value.
+greaterThanOrEqual(n)  Returns true iff n >= the given value.
+=====================  ======
 
 Substitutions
 ~~~~~~~~~~~~~

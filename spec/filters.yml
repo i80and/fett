@@ -197,6 +197,30 @@ tests:
     template: '{{ if x equal(5) }}true{{ else }}false{{ end }}{{ if y equal(5) }}true{{ else }}false{{end}}'
     expected: 'falsefalse'
 
+  - name: LessThan
+    desc: LessThan
+    data: { x: 10, y: "10" }
+    template: '{{ if x lessThan(11) }}true{{ end }}{{ if y lessThan(11) }}true{{ end }}{{ if x lessThan(10) }}false{{ end }}{{ if y lessThan(10) }}false{{ end }}'
+    expected: 'truetrue'
+
+  - name: LessThanOrEqual
+    desc: LessThanOrEqual
+    data: { x: 10, y: "10" }
+    template: '{{ if x lessThanOrEqual(11) }}true{{ end }}{{ if y lessThanOrEqual(11) }}true{{ end }}{{ if x lessThanOrEqual(10) }}true{{ end }}{{ if y lessThanOrEqual(10) }}true{{ end }}{{ if x lessThanOrEqual(9) }}false{{ end }}{{ if y lessThanOrEqual(9) }}false{{ end }}'
+    expected: 'truetruetruetrue'
+
+  - name: GreaterThan
+    desc: GreaterThan
+    data: { x: 10, y: "10" }
+    template: '{{ if x greaterThan(10) }}false{{ end }}{{ if y greaterThan(10) }}false{{ end }}{{ if x greaterThan(9) }}true{{ end }}{{ if y greaterThan(9) }}true{{ end }}'
+    expected: 'truetrue'
+
+  - name: GreaterThanOrEqual
+    desc: GreaterThanOrEqual
+    data: { x: 10, y: "10" }
+    template: '{{ if x greaterThanOrEqual(10) }}true{{ end }}{{ if y greaterThanOrEqual(10) }}true{{ end }}{{ if x greaterThanOrEqual(9) }}true{{ end }}{{ if y greaterThanOrEqual(9) }}true{{ end }}{{ if y greaterThanOrEqual(11) }}false{{ end }}{{ if y greaterThanOrEqual(11) }}false{{ end }}'
+    expected: 'truetruetruetrue'
+
   # Combinations
 
   - name: IncCarCdrCdr

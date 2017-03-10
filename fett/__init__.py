@@ -72,7 +72,11 @@ class Template:
 
         'plus': lambda x, n: int(x) + int(n),
         'minus': lambda x, n: int(x) - int(n),
-        'equal': lambda x1, x2: str(x1) == str(x2)
+        'equal': lambda x1, x2: str(x1) == str(x2),
+        'lessThan': lambda x, n: int(x) < int(n),
+        'lessThanOrEqual': lambda x, n: int(x) <= int(n),
+        'greaterThan': lambda x, n: int(x) > int(n),
+        'greaterThanOrEqual': lambda x, n: int(x) >= int(n),
     }  # type: Dict[str, Any]
 
     def __init__(self, template: str) -> None:
