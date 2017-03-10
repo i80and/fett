@@ -60,7 +60,7 @@ the loop iteration counter ``i`` counts from ``0``, but users often wish to
 count from ``1``. You can obtain a count-from-1 value with the expression
 ``i inc``.
 
-The full list of available filters follows.
+The full list of filters:
 
 ===========  ======
 Filter Name  Effect
@@ -82,6 +82,14 @@ striptags    Remove HTML tags from a value.
 timesNegOne  Returns int(input) * -1
 zero         Returns true iff the input is zero
 ===========  ======
+
+============  ======
+Filter Name  Effect
+============  ======
+add(n)        Increments a value representable as an integer by `n`.
+minus(n)      Decrements a value representable as an integer by `n`.
+equal(value)  Returns true iff a value equals the given value.
+============  ======
 
 Substitutions
 ~~~~~~~~~~~~~

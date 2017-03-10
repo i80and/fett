@@ -165,6 +165,20 @@ tests:
     template: '{{format x}}'
     error: true
 
+  # Filters taking arguments
+
+  - name: Add
+    desc: Add
+    data: { x: 5, y: "5" }
+    template: '{{ x plus(4) }}{{ y plus(2) }}'
+    expected: '97'
+
+  - name: Minus
+    desc: Minus
+    data: { x: 5, y: "5" }
+    template: '{{ x minus(4) }}{{ y minus(2) }}'
+    expected: '13'
+
   # Combinations
 
   - name: IncCarCdrCdr

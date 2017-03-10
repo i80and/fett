@@ -51,6 +51,7 @@ class Template:
     ONLY_WHITESPACE_LEFT = re.compile(r'[^\S\n]*(?:\n|$)')
     ONLY_WHITESPACE_RIGHT = re.compile(r'(?:\n|^)[^\S\n]*$')
     NAME_PAT = re.compile(r'^[a-zA-Z0-9_]+$')
+    FILTER_PAT = re.compile(r'^([a-zA-Z0-9_]+)(?:\(([a-zA-Z0-9_]+)\))?$')
     FILTERS = {'odd': lambda x: int(x) % 2 != 0,
                'even': lambda x: int(x) % 2 == 0,
                'car': lambda x: x[0],
@@ -66,7 +67,10 @@ class Template:
                'split': lambda x: str(x).split(),
                'escape': escape,
                'striptags': lambda x: Template.PAT_TAGS.sub('', x),
-               'zero': lambda x: x == 0}  # type: Dict[str, Any]
+               'zero': lambda x: x == 0,
+
+               'plus': lambda x, n: int(x) + int(n),
+               'minus': lambda x, n: int(x) - int(n)}  # type: Dict[str, Any]
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
@@ -255,10 +259,15 @@ class Template:
 
         while components:
             name = components.pop()
-            if name not in cls.FILTERS:
-                raise ValueError('Unknown filter: ' + name)
+            parsed = cls.FILTER_PAT.match(name)
+            filter_name, args = parsed.groups()
+            if filter_name not in cls.FILTERS:
+                raise ValueError('Unknown filter: ' + filter_name)
 
-            result = '{}({})'.format(name, result)
+            if args is not None:
+                result = '{}({}, {})'.format(filter_name, result, repr(args))
+            else:
+                result = '{}({})'.format(filter_name, result)
 
         return result
 
