@@ -51,27 +51,29 @@ class Template:
     ONLY_WHITESPACE_LEFT = re.compile(r'[^\S\n]*(?:\n|$)')
     ONLY_WHITESPACE_RIGHT = re.compile(r'(?:\n|^)[^\S\n]*$')
     NAME_PAT = re.compile(r'^[a-zA-Z0-9_]+$')
-    FILTER_PAT = re.compile(r'^([a-zA-Z0-9_]+)(?:\(([a-zA-Z0-9_]+)\))?$')
-    FILTERS = {'odd': lambda x: int(x) % 2 != 0,
-               'even': lambda x: int(x) % 2 == 0,
-               'car': lambda x: x[0],
-               'cdr': lambda x: x[1:],
-               'dec': lambda x: int(x) - 1,
-               'len': lambda x: len(x),
-               'strip': lambda x: str(x).strip(),
-               'inc': lambda x: int(x) + 1,
-               'negative': lambda x: int(x) < 0,
-               'not': lambda x: not x,
-               'timesNegOne': lambda x: -int(x),
-               'positive': lambda x: int(x) > 0,
-               'split': lambda x: str(x).split(),
-               'escape': escape,
-               'striptags': lambda x: Template.PAT_TAGS.sub('', x),
-               'zero': lambda x: x == 0,
+    FILTER_PAT = re.compile(r'([a-zA-Z0-9_]+)(?:\(([^)]+)\))?')
+    FILTERS = {
+        'odd': lambda x: int(x) % 2 != 0,
+        'even': lambda x: int(x) % 2 == 0,
+        'car': lambda x: x[0],
+        'cdr': lambda x: x[1:],
+        'dec': lambda x: int(x) - 1,
+        'len': lambda x: len(x),
+        'strip': lambda x: str(x).strip(),
+        'inc': lambda x: int(x) + 1,
+        'negative': lambda x: int(x) < 0,
+        'not': lambda x: not x,
+        'timesNegOne': lambda x: -int(x),
+        'positive': lambda x: int(x) > 0,
+        'split': lambda x: str(x).split(),
+        'escape': escape,
+        'striptags': lambda x: Template.PAT_TAGS.sub('', x),
+        'zero': lambda x: x == 0,
 
-               'plus': lambda x, n: int(x) + int(n),
-               'minus': lambda x, n: int(x) - int(n),
-               'equal': lambda x1, x2: str(x1) == str(x2)}  # type: Dict[str, Any]
+        'plus': lambda x, n: int(x) + int(n),
+        'minus': lambda x, n: int(x) - int(n),
+        'equal': lambda x1, x2: str(x1) == str(x2)
+    }  # type: Dict[str, Any]
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
@@ -250,18 +252,23 @@ class Template:
     def transform_expr(cls, expr: str, unmangle: VariableStack) -> str:
         """Transform a space-delimited sequence of tokens into a chained
            sequence of function calls."""
-        components = expr.split(' ')
-        result = components[0]
-        if not result:
-            return ''
+        if expr.startswith('`'):
+            end_literal_index = expr.find('`', 1)
+            if end_literal_index < 0:
+                raise ValueError('Unmatched literal: ' + expr)
+            result = repr(expr[1:end_literal_index])
+            components_string = expr[end_literal_index + 1:].strip()
+        else:
+            parts = expr.split(' ', 1)
+            result = parts[0]
+            if not result:
+                return ''
 
-        components = components[1:]
-        result = cls.dot_to_subscript(result, unmangle)
+            components_string = '' if len(parts) == 1 else parts[1]
+            result = cls.dot_to_subscript(result, unmangle)
 
-        while components:
-            name = components.pop()
-            parsed = cls.FILTER_PAT.match(name)
-            filter_name, args = parsed.groups()
+        for component in cls.FILTER_PAT.finditer(components_string):
+            filter_name, args = component.groups()
             if filter_name not in cls.FILTERS:
                 raise ValueError('Unknown filter: ' + filter_name)
 

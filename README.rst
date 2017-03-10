@@ -36,6 +36,7 @@ Syntax
 Tag Format                                   Description
 ==========================================   ===========
 ``{{ <expression> }}``                       Substitutions_
+``{{ `foo` <expression> }}``                 Substitutions_
 ``{{ format <name> }}``                      Metaformatting_
 ``{{ if <expression> }}``                    Conditionals_
 ``{{ for <name> in <expression> }}``         Loops_
@@ -53,7 +54,12 @@ An **expression** is given for Substitutions_, Conditionals_, and Loops_.
 
 Expressions take the following form:
 
-``<name>[.<subfield>...] [<filter> [<filter2>...]]``
+    <name>[.<subfield>...] [<filter> [<filter2>...]]
+
+Instead of specifying a field path, you can start an expression using
+a string literal:
+
+    `<literal>` [<filter> [<filter2>...]]
 
 You can use **filters** to modify a single value in simple ways. For example,
 the loop iteration counter ``i`` counts from ``0``, but users often wish to

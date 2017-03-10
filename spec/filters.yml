@@ -185,6 +185,12 @@ tests:
     template: '{{ if x equal(5) }}true{{ end }}{{ if y equal(5) }}true{{end}}'
     expected: 'truetrue'
 
+  - name: EqualLiteral
+    desc: EqualLiteral
+    data: {}
+    template: '{{ if `foo bar` equal(foo bar) }}true{{ end }}'
+    expected: 'true'
+
   - name: EqualFalse
     desc: EqualFalse
     data: { x: 10, y: "foo" }
@@ -196,7 +202,7 @@ tests:
   - name: IncCarCdrCdr
     desc: Increments the third element of a list.
     data: { list: [1, 2, 3, 4, 5] }
-    template: '{{list inc car cdr cdr}}'
+    template: '{{list cdr cdr car inc}}'
     expected: '4'
 
   - name: NotZero
