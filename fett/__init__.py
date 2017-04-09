@@ -2,6 +2,10 @@ from typing import Any, Callable, Dict, List, Tuple, Match
 import re
 import sys
 
+# Prevent Python 2 from converting our nice clean unicode strings back
+# to byte bags.
+str_func = 'str' if sys.version_info > (3,) else 'unicode'
+
 TOKEN_COMMENT = sys.intern('comment')
 TOKEN_ELSE = sys.intern('else')
 TOKEN_END = sys.intern('end')
@@ -235,14 +239,16 @@ class Template:
                 indent -= 4
             elif task[0] is TOKEN_SUB:
                 getter = self.transform_expr(task[1], local_stack)
-                program.append('{}yield str({}).replace("\\n", "\\n" + {})'
-                               .format(' ' * indent, getter, repr(task[2])))
+                program.append('{}yield {}({}).replace("\\n", "\\n" + {})'
+                               .format(' ' * indent, str_func, getter,
+                                       repr(task[2])))
                 need_pass = False
             elif task[0] is TOKEN_FORMAT:
                 getter = self.transform_expr(task[1], local_stack)
-                program.append('{}yield miniformat(str({}), __data__)'
+                program.append('{}yield miniformat({}({}), __data__)'
                                '.replace("\\n", "\\n" + {})'
-                               .format(' ' * indent, getter, repr(task[2])))
+                               .format(' ' * indent, str_func, getter,
+                                       repr(task[2])))
                 need_pass = False
 
         self.program_source = '\n'.join(program)
