@@ -153,6 +153,18 @@ tests:
     template: '{{ if x zero }}Zero{{ end }}'
     expected: ''
 
+  - name: UpperCase
+    desc: Convert to upper case
+    data: { x: 'þýða', y: 5 }
+    template: '{{ x upperCase }} {{ y upperCase }}'
+    expected: 'ÞÝÐA 5'
+
+  - name: LowerCase
+    desc: convert to lower case
+    data: { x: 'ÞÝÐA', y: 5 }
+    template: '{{ x lowerCase }} {{ y lowerCase }}'
+    expected: 'þýða 5'
+
   - name: UnknownFilter
     desc: Unknown filters should result in an error
     data: { x: 0 }

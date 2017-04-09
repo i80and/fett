@@ -89,6 +89,13 @@ timesNegOne  Returns int(input) * -1
 zero         Returns true iff the input is zero
 ===========  ======
 
+===========  ======
+Filter Name  Effect
+===========  ======
+upperCase    Returns a Unicode-aware uppercase version of the input.
+lowerCase    Returns a Unicode-aware lowercase version of the input.
+===========  ======
+
 =====================  ======
 Filter Name            Effect
 =====================  ======

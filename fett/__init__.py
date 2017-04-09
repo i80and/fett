@@ -70,6 +70,9 @@ class Template:
         'striptags': lambda x: Template.PAT_TAGS.sub('', x),
         'zero': lambda x: x == 0,
 
+        'upperCase': lambda x: str(x).upper(),
+        'lowerCase': lambda x: str(x).lower(),
+
         'plus': lambda x, n: int(x) + int(n),
         'minus': lambda x, n: int(x) - int(n),
         'equal': lambda x1, x2: str(x1) == str(x2),
