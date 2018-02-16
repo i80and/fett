@@ -12,7 +12,7 @@ coverage:
 	coverage report --omit=renderer
 
 lint:
-	pep8 fett/__init__.py ./setup.py ./bench.py ./spec/test.py
+	pycodestyle fett/__init__.py ./setup.py ./bench.py ./spec/test.py
 	mypy --strict-optional --disallow-untyped-defs fett/__init__.py
 
 bench:

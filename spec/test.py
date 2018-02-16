@@ -34,5 +34,6 @@ def main(args):
                 print('Expected: ', repr(expected))
                 raise err
 
+
 if __name__ == '__main__':
     main(sys.argv)

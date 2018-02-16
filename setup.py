@@ -54,6 +54,7 @@ class BuildPy27(_build_py):
         except (ValueError, IOError) as err:
             print('3to2 error (%s => %s): %s' % (source, target, err))
 
+
 VERSION = '0.3.2.dev0'
 
 CLASSIFIERS = (

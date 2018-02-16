@@ -102,6 +102,7 @@ class PystacheBench:
     def bench(cls):
         pystache.render(cls.template, DATA)
 
+
 DATA = {
     'heading': '~~~~~~~~~~~~~~~~~~~~~',
     'steps': [
