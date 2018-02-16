@@ -75,6 +75,12 @@ tests:
     template: "[{{if missing}}Found key 'missing'!{{end}}]"
     expected: "[]"
 
+  - name: Nested Context Misses
+    desc: Objects missing an attribute should behave like falsey values.
+    data: { a: { b: {} } }
+    template: "{{if a.c}}Found key 'a.c'{{end}}"
+    expected: ''
+
   - name: Loop Else
     desc: If a loop is not executed, its 'else' block should be rendered.
     data: { list: [] }
