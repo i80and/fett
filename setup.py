@@ -88,6 +88,7 @@ if __name__ == '__main__':
           author='Andrew Aldridge',
           author_email='i80and@foxquill.com',
           url='https://github.com/i80and/fett',
+          zip_safe=False,
           setup_requires=SETUP_REQUIRES,
           install_requires=INSTALL_REQUIRES,
           classifiers=CLASSIFIERS,
