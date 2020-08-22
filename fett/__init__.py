@@ -84,7 +84,7 @@ class Template:
         'lessThanOrEqual': lambda x, n: int(x) <= int(n),
         'greaterThan': lambda x, n: int(x) > int(n),
         'greaterThanOrEqual': lambda x, n: int(x) >= int(n),
-    }  # type: Dict[str, Any]
+    }  # type: Dict[str, Callable[..., object]]
 
     def __init__(self, template: str) -> None:
         self.program_source = ''
