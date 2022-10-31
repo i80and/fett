@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fett"
-version = "0.3.2.dev0"
+version = "0.4.0"
 description = "A fast indentation-preserving template engine."
 authors = ["Heli Aldridge <heli@heli.pet>"]
 license = "MIT"
