@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "fett"
+version = "0.3.2.dev0"
+description = "A fast indentation-preserving template engine."
+authors = ["Heli Aldridge <heli@heli.pet>"]
+license = "MIT"
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+
+[tool.poetry.group.dev.dependencies]
+PyYAML = "^6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
